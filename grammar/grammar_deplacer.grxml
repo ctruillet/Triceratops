@@ -1,0 +1,97 @@
+<grammar version="1.0" root="deplacer" xml:lang="fr">
+    <meta name="description" content="grammaire deplacer"/>
+    <meta name="author" content="Maxence Da Silva"/>
+    <meta name="copyright" content="free for any purpose"/>
+<!--
+  ~ Copyright (c) 2021.
+  ~ Maxence Da Silva en association avec Clément Truillet (clement@ctruillet.eu)
+  -->
+    <rule id="deplacer" scope="public">
+        <tag>out.text = '';</tag>
+        <item>
+            <ruleref uri="#action"/>
+            <tag>
+                out.text = out.text + " " + rules.action.text;
+                out.action = rules.action.tag;
+            </tag>
+        </item>
+        <item>
+            <ruleref uri="#forme"/>
+            <tag>
+                out.text = out.text + " " + rules.forme.text;
+                out.forme = rules.forme.tag;
+            </tag>
+        </item>
+        <item repeat="0-1"> <ruleref uri="#couleur"/>
+            <tag>
+                out.text = out.text + " " + rules.couleur.text;
+                out.couleur = rules.couleur.tag;
+            </tag>
+        </item>
+        <item> <ruleref uri="#localisation"/>
+            <tag>
+                out.text = out.text + " " + rules.localisation.text;
+                out.localisation = rules.localisation.tag;
+            </tag>
+        </item>
+    </rule>
+
+    <rule id="action">
+        <one-of>
+            <item> deplace <tag> out.tag = "MOVE" </tag> </item>
+            <item> deplacer <tag> out.tag = "MOVE" </tag> </item>
+            <item> bouge <tag> out.tag = "MOVE" </tag> </item>
+            <item> bouger <tag> out.tag = "MOVE" </tag> </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="forme">
+        <one-of>
+            <item>
+                <one-of>
+                    <item> ca <tag> out.tag = "THIS" </tag></item>
+                    <item> ceci <tag> out.tag = "THIS" </tag></item>
+                </one-of>
+            </item>
+            <item>
+                <item repeat="0-1"> <ruleref uri="#mot_liaison"/> </item>
+                <one-of>
+                    <item> rectangle <tag> out.tag = "THIS" </tag></item>
+                    <item> triangle <tag> out.tag = "THIS" </tag></item>
+                    <item> cercle <tag> out.tag = "THIS" </tag></item>
+                </one-of>
+            </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="couleur">
+        <item repeat="0-1"> en </item>
+        <one-of>
+            <item> rouge <tag> out.tag = "RED" </tag></item>
+            <item> vert <tag> out.tag = "GREEN" </tag></item>
+            <item> bleu <tag> out.tag = "BLUE" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="localisation">
+        <one-of>
+            <item> la <tag> out.tag = "THERE" </tag></item>
+            <item> ici <tag> out.tag = "THERE" </tag></item>
+            <item> a cet endroit <tag> out.tag = "THERE" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="mot_liaison">
+        <one-of>
+            <item> un </item>
+            <item> en </item>
+            <item> ce </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+</grammar>

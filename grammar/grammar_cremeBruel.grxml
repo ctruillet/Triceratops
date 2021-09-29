@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2021.
+  ~ Clément Truillet (clement@ctruillet.eu)
+  -->
+
+<!DOCTYPE grammar PUBLIC "-//W3C//DTD GRAMMAR 1.0//EN"
+        "grammar.dtd">
+<!-- the default grammar language is FR  -->
+<grammar  version="1.0"
+          mode ="voice"
+          xmlns="http://www.w3.org/2001/06/grammar"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.w3.org/2001/06/grammar
+                              grammar.xsd"
+          xml:lang="fr-FR" root="Speech_Recognition" tag-format="semantics/1.0">
+
+    <rule id="Speech_Recognition" scope="public">
+
+        <item> <ruleref uri="#action"/> <tag> out.action = rules.action </tag></item>
+        <item repeat="0-1"> <ruleref uri="#pointage"/> <tag> out.pointage = rules.pointage </tag></item>
+        <item repeat="0-1"> <ruleref uri="#dessert"/> <tag> out.dessert = rules.dessert </tag></item>
+        <item repeat="0-1"> <ruleref uri="#couleur"/> <tag> out.couleur = rules.couleur </tag></item>
+        <item repeat="0-1"> <ruleref uri="#localisation"/> <tag> out.localisation = rules.localisation</tag></item>
+        <ruleref special="GARBAGE"/>
+
+        <tag> out = "action=" + out.action + " this=" + out.pointage + " what=" + out.dessert + " color=" + out.couleur + " where=" + out.localisation </tag>
+    </rule>
+
+    <rule id="action">
+        <tag> out = "none" </tag>
+        <one-of>
+            <item> crée <tag> out = "CREATE" </tag></item>
+            <item> ajoute <tag> out = "CREATE" </tag></item>
+
+            <item> supprime <tag> out = "DELETE" </tag></item>
+            <item> efface <tag> out = "DELETE" </tag></item>
+            <item> retire <tag> out = "DELETE" </tag></item>
+
+            <item> déplace  <tag> out = "MOVE" </tag></item>
+            <item> bouge  <tag> out = "MOVE" </tag></item>
+
+            <item> quitte <tag> out = "QUIT" </tag></item>
+            <item> sort <tag> out = "QUIT" </tag></item>
+            <item> arrête <tag> out = "QUIT" </tag></item>
+        </one-of>
+    </rule>
+
+    <rule id="pointage">
+        <tag> out = "none" </tag>
+        <one-of>
+            <item> ça <tag> out = "THIS" </tag></item>
+            <item> ceci <tag> out = "THIS" </tag></item>
+            <item> cette <tag> out = "THIS" </tag></item>
+            <item> ce <tag> out = "THIS" </tag></item>
+        </one-of>
+    </rule>
+
+    <rule id="dessert">
+        <tag> out = "none" </tag>
+        <one-of>
+            <item> choco <tag> out = "CHOCO" </tag></item>
+            <item> caramel <tag> out = "CARAMEL" </tag></item>
+            <item> croissant <tag> out = "CROISSANT" </tag></item>
+            <item> pain au raisin <tag> out = "PAIN_AU_RAISIN" </tag></item>
+            <item> crème brûlée <tag> out = "CREME_BRULEE" </tag></item>
+            <item> café <tag> out = "CAFE" </tag></item>
+            <item> thé <tag> out = "THE" </tag></item>
+            <item> chocolat chaud <tag> out = "CHOCOLAT_CHAUD" </tag></item>
+            <item> beurre <tag> out = "BEURRE" </tag></item>
+        </one-of>
+    </rule>
+
+    <rule id="couleur">
+        <tag> out = "none" </tag>
+        <ruleref special="GARBAGE"/>
+        <one-of>
+            <item> rouge <tag> out = "RED" </tag></item>
+            <item> orange <tag> out = "ORANGE" </tag></item>
+            <item> jaune <tag> out = "YELLOW" </tag></item>
+            <item> vert <tag> out = "GREEN" </tag></item>
+            <item> verte <tag> out = "GREEN" </tag></item>
+            <item> bleu <tag> out = "BLUE" </tag></item>
+            <item> violet <tag> out = "PURPLE" </tag></item>
+            <item> violette <tag> out = "PURPLE" </tag></item>
+        </one-of>
+    </rule>
+
+    <rule id="localisation">
+        <tag> out = "none" </tag>
+        <one-of>
+            <item> là <tag> out = "THERE" </tag></item>
+            <item> ici <tag> out = "THERE" </tag></item>
+            <item> à cet endroit <tag> out = "THERE" </tag></item>
+        </one-of>
+    </rule>
+</grammar>
