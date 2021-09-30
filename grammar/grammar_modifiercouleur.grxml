@@ -1,0 +1,96 @@
+<grammar version="1.0" root="modifier" xml:lang="fr">
+    <meta name="description" content="grammaire modifier"/>
+    <meta name="author" content="Maxence Da Silva"/>
+    <meta name="copyright" content="free for any purpose"/>
+    <!--
+      ~ Copyright (c) 2021.
+      ~ Maxence Da Silva en association avec Clément Truillet (clement@ctruillet.eu)
+      -->
+    <rule id="modifier" scope="public">
+        <tag>out.text = '';</tag>
+        <item>
+            <ruleref uri="#action"/>
+            <tag>
+                out.text = out.text + " " + rules.action.text;
+                out.action = rules.action.tag;
+            </tag>
+        </item>
+        <item> la couleur de <tag> out.text = out.text + " la couleur de"; </tag> </item>
+        <item>
+            <ruleref uri="#objet"/>
+            <tag>
+                out.text = out.text + " " + rules.objet.text;
+                out.forme = rules.objet.forme;
+            </tag>
+        </item>
+        <item> <ruleref uri="#couleur"/>
+            <tag>
+                out.text = out.text + " " + rules.couleur.text;
+                out.couleur = rules.couleur.tag;
+            </tag>
+        </item>
+    </rule>
+
+    <rule id="action">
+        <one-of>
+            <item> change <tag> out.tag = "CHANGE" </tag> </item>
+            <item> changer <tag> out.tag = "CHANGE" </tag> </item>
+            <item> modifie <tag> out.tag = "CHANGE" </tag> </item>
+            <item> modifier <tag> out.tag = "CHANGE" </tag> </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="objet">
+        <one-of>
+            <item> <ruleref uri="#forme"/>
+                <tag> out.forme = rules.forme.tag; </tag>
+            </item>
+            <item> <ruleref uri="#figure"/>
+                <tag>
+                    out.forme = rules.figure.tag;
+                </tag>
+            </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="forme">
+        <one-of>
+            <item> ca <tag> out.tag = "THIS" </tag></item>
+            <item> ceci <tag> out.tag = "THIS" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="figure">
+        <item repeat="0-1"> <ruleref uri="#mot_liaison"/> </item>
+        <one-of>
+            <item> rectangle <tag> out.tag = "RECTANGLE" </tag></item>
+            <item> triangle <tag> out.tag = "TRIANGLE" </tag></item>
+            <item> cercle <tag> out.tag = "CIRCLE" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="couleur">
+        <item repeat="0-1"> en </item>
+        <one-of>
+            <item> rouge <tag> out.tag = "RED" </tag></item>
+            <item> vert <tag> out.tag = "GREEN" </tag></item>
+            <item> bleu <tag> out.tag = "BLUE" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="mot_liaison">
+        <one-of>
+            <item> un </item>
+            <item> en </item>
+            <item> ce </item>
+            <item> le </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+</grammar>
