@@ -17,6 +17,11 @@ public class Palette  extends PApplet {
 
     public void setup(){
         processing = this;
+        surface.setIcon(loadImage("data/logo.png"));
         surface.setTitle("Une petite Creme (Patrick) Bruel");
+    }
+
+    public void draw(){
+        new Command(Action.CREER,Shape.RECTANGLE).draw();
     }
 }
