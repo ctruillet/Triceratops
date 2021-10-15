@@ -25,11 +25,21 @@ public class Command {
     //Attributs
     protected Action action;
     protected Shape shape;
-    protected Color color;
+    protected Forme forme;
+    protected Couleur color;
     protected PVector localisation;
 
     //Constructeur
+    public Command(){
+        this(null, null, null, 0.f, 0.f);
+    }
 
+
+
+    public Command(Action action, Shape shape) {
+        // ToDo Gestion de la couleur, la localisation et confidence par defaut
+        this(action,shape,null, null, 0.f, 0.f);
+    }
 
     public Command(Action action, Shape shape) {
         // ToDo Gestion de la couleur et de la localisation par defaut
@@ -54,7 +64,13 @@ public class Command {
     }
 
     //Méthodes
-    public void draw(){
+
+    public void drawCommand(){
+        //ToDo Afficher le résultat de la commande sur la palette
+
+        System.out.println(this.toString());
+    }
+    public void drawFeedback(){
         Palette.processing.noStroke();
         switch (action){
             case CREER:
@@ -76,10 +92,101 @@ public class Command {
         Palette.processing.triangle(largeurRect,0,largeurRect,30,largeurRect+15,15);
         Palette.processing.textAlign(CENTER, CENTER);
         Palette.processing.fill(new java.awt.Color(0, 0,0).getRGB(),255);
-        Palette.processing.text(action.name(),largeurRect/2,15);
+        Palette.processing.text(action.name(), (float) (largeurRect/2.0),15);
 
         // ToDo Afficher Forme
+        switch (shape){
+            case CIRCLE:
+                break;
+            case TRIANGLE:
+                break;
+            case RECTANGLE:
+                break;
+            default:
+                break;
+        }
+
         // ToDo Afficher Localisation
         // ToDo Afficher Couleur
+
+    }
+    //ToDo
+    public boolean isValidCommand(){
+        //return true;
+        switch (this.action){
+            case SUPPRIMER:
+                // supprimer quoi ? Forme + Couleur (?) / Position
+                //  Supprimer ce triangle
+                //  Supprimer le triangle rouge
+                //  Supprimer ça
+
+                break;
+            case CREER:
+//                Créer un rectangle
+//                Créer un rectangle rouge
+//                Créer un rectangle rouge ici
+//
+//                 FORME [+ COULEUR] [+ POSITION]
+                return (this.shape != null);
+
+            case DEPLACER:
+                //  Déplacer ça là
+                //  Déplacer le triangle ici
+                //  Déplacer ce triangle là
+                //  Déplacer le triangle rouge là bas
+
+                //
+            case MODIFIER:
+            case ERREUR:
+                return true;
+        }
+
+        return false;
+    }
+
+    public void creerForme(Couleur color, Shape shape, PVector position) {
+        this.forme = new Forme(color, shape, position);
+        forme.drawForme();
+    }
+
+    public void setAction(Action action) {
+        this.action = action;
+    }
+
+    public void setShape(Shape shape) {
+        this.shape = shape;
+    }
+
+    public void setColor(Couleur color) {
+        this.color = color;
+    }
+
+    public void setLocalisation(PVector localisation) {
+        this.localisation = localisation;
+    }
+
+    public void setConfidenceOneDollar(float confidenceOneDollar) {
+        this.confidenceOneDollar = confidenceOneDollar;
+    }
+
+    public void setConfidenceSra5(float confidenceSra5) {
+        this.confidenceSra5 = confidenceSra5;
+    }
+
+    public static void drawFeedBack(Command c){
+        if (c == null)
+                return;
+        c.drawFeedback();
+    }
+    @Override
+    public String toString() {
+        return "Command{" +
+                "action=" + action +
+                ", shape=" + shape +
+                ", color=" + color +
+                ", localisation=" + localisation +
+                ", confidenceOneDollar=" + confidenceOneDollar +
+                ", confidenceSra5=" + confidenceSra5 +
+                '}';
     }
 }

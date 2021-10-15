@@ -2,11 +2,9 @@ package eu.ctruillet.ihm.triceratops.palette;
 
 import processing.core.PVector;
 
-import java.awt.*;
-
 public class Forme {
     //Attributs
-    protected Color color;
+    protected Couleur color;
     protected Shape shape;
     protected PVector position;
 
@@ -18,7 +16,7 @@ public class Forme {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(Couleur color) {
         this.color = color;
     }
 
