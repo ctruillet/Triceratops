@@ -61,7 +61,7 @@ void setup() {
     bus.start("127.255.255.255:2010");
   }
   catch (IvyException ie) {}
-    mae = FSM.INITIAL;
+    mae = FSM.IMPORT;
 }
 
 void draw() {
