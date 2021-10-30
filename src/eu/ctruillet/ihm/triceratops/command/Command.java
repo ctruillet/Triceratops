@@ -1,4 +1,4 @@
-package eu.ctruillet.ihm.triceratops.palette;
+package eu.ctruillet.ihm.triceratops.command;
 
 /*
 * ACTION
@@ -17,9 +17,11 @@ package eu.ctruillet.ihm.triceratops.palette;
 *   Bleu
  */
 
+import eu.ctruillet.ihm.triceratops.palette.*;
 import processing.core.PVector;
 
 import static processing.core.PConstants.CENTER;
+import static processing.core.PConstants.CORNER;
 
 public class Command {
     //Attributs
@@ -28,10 +30,13 @@ public class Command {
     protected Forme forme;
     protected Couleur color;
     protected PVector localisation;
+    protected float confidenceOneDollar;
+    protected float confidenceSra5;
 
     //Constructeur
     public Command(){
-        this(null, null, null, 0.f, 0.f);
+        //ToDo peut être pas une bonne idée de mettre ici les params par défaut -> fout en l'air le check si la commande est valide
+        this(null, Shape.RECTANGLE, Couleur.ROUGE, new PVector((float) (Math.random() * 640), (float) (Math.random() * 480)), 0.f, 0.f);
     }
 
 
@@ -41,26 +46,27 @@ public class Command {
         this(action,shape,null, null, 0.f, 0.f);
     }
 
-    public Command(Action action, Shape shape) {
+    public Command(Action action, Shape shape, float confidenceShape) {
         // ToDo Gestion de la couleur et de la localisation par defaut
-        this(action,shape,null, null);
+        this(action,shape,null, null, confidenceShape, 0.f);
     }
 
-    public Command(Action action, Shape shape, Color color) {
+    public Command(Action action, Shape shape, Couleur color, float confidenceShape, float confidenceColor) {
         // ToDo Gestion de la localisation par defaut
-        this(action,shape,color, null);
+        this(action,shape,color, null, confidenceShape, confidenceColor);
     }
 
-    public Command(Action action, Shape shape, PVector localisation) {
-        //ToDo Gestion de la couleur
-        this(action,shape,null, localisation);
+    public Command(Action action, Shape shape, PVector localisation, float confidenceShape) {
+        this(action,shape, null, localisation, confidenceShape, 0.f);
     }
 
-    public Command(Action action, Shape shape, Color color, PVector localisation) {
+    public Command(Action action, Shape shape, Couleur color, PVector localisation, float confidenceShape, float confidenceColor) {
         this.action = action;
         this.shape = shape;
         this.color = color;
         this.localisation = localisation;
+        this.confidenceOneDollar = confidenceShape;
+        this.confidenceSra5 = confidenceColor;
     }
 
     //Méthodes
@@ -68,8 +74,30 @@ public class Command {
     public void drawCommand(){
         //ToDo Afficher le résultat de la commande sur la palette
 
-        System.out.println(this.toString());
+        if(this.action != Action.CREER)
+            return;
+
+        switch (this.shape){
+            case RECTANGLE:
+                Palette.processing.rectMode(CENTER);
+                Palette.processing.fill(Couleur.getColor(this.color).getRGB());
+                Palette.processing.rect(this.localisation.x, this.localisation.y, 100,60);
+                Palette.processing.rectMode(CORNER);
+                break;
+            case TRIANGLE:
+                Palette.processing.fill(Couleur.getColor(this.color).getRGB());
+                Palette.processing.triangle(this.localisation.x - 50, this.localisation.y + 30 , this.localisation.x + 50, this.localisation.y + 30 , this.localisation.x , this.localisation.y - 50 );
+                break;
+            case CIRCLE:
+                Palette.processing.fill(Couleur.getColor(this.color).getRGB());
+                Palette.processing.circle(this.localisation.x, this.localisation.y, 100);
+                break;
+            default:
+                break;
+        }
+
     }
+
     public void drawFeedback(){
         Palette.processing.noStroke();
         switch (action){
@@ -78,6 +106,13 @@ public class Command {
                 break;
             case DEPLACER:
                 Palette.processing.fill(new java.awt.Color(62, 133, 159).getRGB(),255);
+                break;
+            case CANCEL:
+            case SUPPRIMER:
+                Palette.processing.fill(new java.awt.Color(255, 119, 70).getRGB(),255);
+                break;
+            case MODIFIER:
+                Palette.processing.fill(new java.awt.Color(15, 136, 15).getRGB(),255);
                 break;
             case ERREUR:
                 Palette.processing.fill(new java.awt.Color(199, 45, 45).getRGB(),255);
@@ -95,15 +130,17 @@ public class Command {
         Palette.processing.text(action.name(), (float) (largeurRect/2.0),15);
 
         // ToDo Afficher Forme
-        switch (shape){
-            case CIRCLE:
-                break;
-            case TRIANGLE:
-                break;
-            case RECTANGLE:
-                break;
-            default:
-                break;
+        if(shape != null) {
+            switch (shape) {
+                case CIRCLE:
+                    break;
+                case TRIANGLE:
+                    break;
+                case RECTANGLE:
+                    break;
+                default:
+                    break;
+            }
         }
 
         // ToDo Afficher Localisation
@@ -112,7 +149,8 @@ public class Command {
     }
     //ToDo
     public boolean isValidCommand(){
-        //return true;
+        if(this.action == null) return false;
+
         switch (this.action){
             case SUPPRIMER:
                 // supprimer quoi ? Forme + Couleur (?) / Position
@@ -121,6 +159,8 @@ public class Command {
                 //  Supprimer ça
 
                 break;
+            case CANCEL:
+                return true;
             case CREER:
 //                Créer un rectangle
 //                Créer un rectangle rouge
@@ -136,9 +176,14 @@ public class Command {
                 //  Déplacer le triangle rouge là bas
 
                 //
+                break;
             case MODIFIER:
+                break;
             case ERREUR:
                 return true;
+
+            default:
+                return false;
         }
 
         return false;
@@ -151,6 +196,10 @@ public class Command {
 
     public void setAction(Action action) {
         this.action = action;
+    }
+
+    public Action getAction() {
+        return action;
     }
 
     public void setShape(Shape shape) {

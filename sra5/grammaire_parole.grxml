@@ -18,7 +18,7 @@
 		<item repeat="0-1"> <ruleref uri="#localisation"/> <tag> out.localisation = rules.localisation</tag></item>
 		<ruleref special="GARBAGE"/>
 		
-		<tag> out = "action=" + out.action + " where=" + out.pointage + " form=" + out.forme + " color=" + out.couleur + " localisation=" + out.localisation </tag> 
+		<tag> out = "action=" + out.action + " what=" + out.pointage + " form=" + out.forme + " color=" + out.couleur + " localisation=" + out.localisation </tag>
 	</rule>
 
 	<rule id="action">
@@ -26,17 +26,28 @@
 		<one-of>
 			<item> créer <tag> out = "CREATE" </tag></item>
 			<item> dessiner <tag> out = "CREATE" </tag></item>
-			<item> tracer <tag> out = "CREATE" </tag></item>
+			<item> crée <tag> out = "CREATE" </tag></item>
+			<item> dessine <tag> out = "CREATE" </tag></item>
 
 			<item> supprimer <tag> out = "DELETE" </tag></item>
 			<item> effacer <tag> out = "DELETE" </tag></item>
+			<item> supprime <tag> out = "DELETE" </tag></item>
+			<item> efface <tag> out = "DELETE" </tag></item>
 			
 			<item> déplacer  <tag> out = "MOVE" </tag></item>
 			<item> bouger  <tag> out = "MOVE" </tag></item>
+			<item> déplace <tag> out = "MOVE" </tag></item>
+			<item> bouge  <tag> out = "MOVE" </tag></item>
+			
+			<item> annuler <tag> out = "ANNULER" </tag></item>
+			<item> annule <tag> out = "ANNULER" </tag></item>
 
 			<item> quitter <tag> out = "QUIT" </tag></item>
 			<item> sortir <tag> out = "QUIT" </tag></item>
 			<item> arrêter <tag> out = "QUIT" </tag></item>
+			<item> quitte <tag> out = "QUIT" </tag></item>
+			<item> sort <tag> out = "QUIT" </tag></item>
+			<item> arrête <tag> out = "QUIT" </tag></item>
 		</one-of>
 	</rule>
 
@@ -53,7 +64,6 @@
 		<ruleref special="GARBAGE"/>			
 		<one-of>
 			<item> triangle <tag> out = "TRIANGLE" </tag></item>
-			<item> losange <tag> out = "DIAMOND" </tag></item>
 			<item> cercle <tag> out = "CIRCLE" </tag></item>
 			<item> rectangle <tag> out = "RECTANGLE" </tag></item>
 		</one-of>
@@ -64,12 +74,8 @@
 		<ruleref special="GARBAGE"/>	
 		<one-of>
 			<item> rouge <tag> out = "RED" </tag></item>
-			<item> orange <tag> out = "ORANGE" </tag></item>
-			<item> jaune <tag> out = "YELLOW" </tag></item>
-			<item> vert <tag> out = "GRREN" </tag></item>
+			<item> vert <tag> out = "GREEN" </tag></item>
 			<item> bleu <tag> out = "BLUE" </tag></item>
-			<item> violet <tag> out = "PURPLE" </tag></item>
-			<item> noir <tag> out = "DARK" </tag></item>
 		</one-of> 
 	</rule>
 

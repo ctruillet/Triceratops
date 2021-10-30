@@ -18,6 +18,17 @@ public enum Couleur {
         }
     }
 
+    public static Couleur getColor(String c){
+        switch (c){
+            case "GREEN":
+                return VERT;
+            case "BLUE":
+                return BLEU;
+            default:
+                return ROUGE;
+        }
+    }
+
     public static java.awt.Color getRed(){
         return new java.awt.Color(255,0,0);
     }

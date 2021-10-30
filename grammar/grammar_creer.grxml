@@ -1,7 +1,14 @@
-<grammar version="1.0" root="creer" xml:lang="fr">
-    <meta name="description" content="grammaire creer"/>
-    <meta name="author" content="Maxence Da Silva"/>
-    <meta name="copyright" content="free for any purpose"/>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE grammar PUBLIC "-//W3C//DTD GRAMMAR 1.0//FR"
+        "grammar.dtd">
+<!-- the default grammar language is FR  -->
+<grammar  version="1.0"
+          mode ="voice"
+          xmlns="http://www.w3.org/2001/06/grammar"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.w3.org/2001/06/grammar
+                              grammar.xsd"
+          xml:lang="fr-FR" root="creer" tag-format="semantics/1.0">
 
     <rule id="creer" scope="public">
         <tag>out.text = '';</tag>
