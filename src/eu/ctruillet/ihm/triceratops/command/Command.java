@@ -20,6 +20,10 @@ package eu.ctruillet.ihm.triceratops.command;
 import eu.ctruillet.ihm.triceratops.palette.*;
 import processing.core.PVector;
 
+import java.util.Collection;
+
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 import static processing.core.PConstants.CENTER;
 import static processing.core.PConstants.CORNER;
 
@@ -39,8 +43,6 @@ public class Command {
         this(null, Shape.RECTANGLE, Couleur.ROUGE, new PVector((float) (Math.random() * 640), (float) (Math.random() * 480)), 0.f, 0.f);
     }
 
-
-
     public Command(Action action, Shape shape) {
         // ToDo Gestion de la couleur, la localisation et confidence par defaut
         this(action,shape,null, null, 0.f, 0.f);
@@ -49,6 +51,11 @@ public class Command {
     public Command(Action action, Shape shape, float confidenceShape) {
         // ToDo Gestion de la couleur et de la localisation par defaut
         this(action,shape,null, null, confidenceShape, 0.f);
+    }
+
+    public Command(Action action, Shape shape, Couleur color, PVector localisation) {
+        // ToDo Gestion de la couleur et de la localisation par defaut
+        this(action, shape, color, localisation, 0.f, 0.f);
     }
 
     public Command(Action action, Shape shape, Couleur color, float confidenceShape, float confidenceColor) {
@@ -67,6 +74,8 @@ public class Command {
         this.localisation = localisation;
         this.confidenceOneDollar = confidenceShape;
         this.confidenceSra5 = confidenceColor;
+
+        this.creerForme(this.color, this.shape, this.localisation);
     }
 
     //Méthodes
@@ -191,7 +200,7 @@ public class Command {
 
     public void creerForme(Couleur color, Shape shape, PVector position) {
         this.forme = new Forme(color, shape, position);
-        forme.drawForme();
+        //forme.drawForme();
     }
 
     public void setAction(Action action) {
@@ -238,4 +247,49 @@ public class Command {
                 ", confidenceSra5=" + confidenceSra5 +
                 '}';
     }
+
+    public Shape getShape() {
+        return this.shape;
+    }
+
+    public boolean isMouseOnShape(float mouseX, float mouseY) {
+        boolean isOnShape = false;
+
+        switch (this.getShape()) {
+            case TRIANGLE:
+                PVector AB = new PVector( (int) (this.localisation.x + 50 - (this.localisation.x - 50)), 0);
+                PVector AC = new PVector( (int) (this.localisation.x - (this.localisation.x - 50)),(int) ((this.localisation.y - 50) - (this.localisation.y + 30)));
+                PVector AM = new PVector( (int) (mouseX - (this.localisation.x - 50)),(int) (mouseY - (this.localisation.y + 30)));
+
+                PVector BA = new PVector( (int) ((this.localisation.x - 50) - (this.localisation.x + 50)), 0);
+                PVector BC = new PVector( (int) (this.localisation.x - (this.localisation.x + 50)),(int) ((this.localisation.y - 50) - (this.localisation.y + 30)));
+                PVector BM = new PVector( (int) (mouseX - (this.localisation.x + 50)),(int) (mouseY - (this.localisation.y + 30)));
+
+                PVector CA = new PVector( (int) ((this.localisation.x - 50) - this.localisation.x), (int) ((this.localisation.y + 30) - (this.localisation.y - 50)));
+                PVector CB = new PVector( (int) ((this.localisation.x + 50) - this.localisation.x), (int) ((this.localisation.y + 30) - (this.localisation.y - 50)));
+                PVector CM = new PVector( (int) (mouseX - this.localisation.x), (int) (mouseY - (this.localisation.y - 50)));
+
+                if ( ((AB.cross(AM)).dot(AM.cross(AC)) >=0) && ((BA.cross(BM)).dot(BM.cross(BC)) >=0) && ((CA.cross(CM)).dot(CM.cross(CB)) >=0) ) {
+                    isOnShape = true;
+                }
+                break;
+            case RECTANGLE:
+                // RectMode CENTER
+                if (mouseX > this.localisation.x - 50 && mouseX < this.localisation.x + 50 && mouseY > this.localisation.y - 30 && mouseY < this.localisation.y + 30) {
+                    isOnShape = true;
+                }
+                break;
+            case CIRCLE:
+                // Radius = 50
+                if (sqrt(pow(mouseX - this.localisation.x, 2) + pow(mouseY - this.localisation.y, 2)) < 50) {
+                    isOnShape = true;
+                }
+                break;
+            default:
+                break;
+        }
+
+        return isOnShape;
+    }
+
 }

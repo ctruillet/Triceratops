@@ -77,12 +77,13 @@ public class IvyListener {
             //sra5 Parsed=action=MOVE what=undefined form=undefined color=RED localisation=undefined Confidence=0,8282248 NP=11 Num_A=0
             //^sra5 Parsed=action=(.*) what=(.*) form=(.*) color=(.*) localisation=(.*) Confidence=(.*) NP=(.*)$
             //sra5 Parsed=action=CREATE what=undefined form=RECTANGLE color=BLUE localisation=THERE Confidence=0,8282248 NP=11 Num_A=0
+            //sra5 Parsed=action=CREATE what=THIS form=undefined color=BLUE localisation=THERE Confidence=0,8282248 NP=11 Num_A=0
             bus.bindMsg("^sra5 Parsed=action=(.*) what=(.*) form=(.*) color=(.*) localisation=(.*) Confidence=(.*) NP=(.*) Num_A=(.*)$", new IvyMessageListener() {
                 @Override
                 public void receive(IvyClient ivyClient, String[] strings) {
                     System.out.println("> SRA5 \n"
                                     + "\taction=" + strings[0] + "\n"
-                                    + "\twhere=" + strings[1] + "\n"
+                                    + "\twhat=" + strings[1] + "\n"
                                     + "\tform=" + strings[2] + "\n"
                                     + "\tcolor=" + strings[3] + "\n"
                                     + "\tlocalisation=" + strings[4] + "\n"

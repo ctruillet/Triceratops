@@ -17,4 +17,17 @@ public enum Shape {
                 return null;
         }
     }
+
+    public String getName() {
+        switch (this) {
+            case RECTANGLE:
+                return "Rectangle";
+            case TRIANGLE:
+                return "Triangle";
+            case CIRCLE:
+                return "Circle";
+            default:
+                return null;
+        }
+    }
 }

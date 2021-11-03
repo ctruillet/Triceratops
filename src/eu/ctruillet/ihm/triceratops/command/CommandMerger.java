@@ -7,10 +7,23 @@ import eu.ctruillet.ihm.triceratops.palette.Shape;
 import processing.core.PVector;
 
 public class CommandMerger {
+    //Constantes
+    private static float MOUSE_CLICKED_DELAY = 5000.f;
+    private static float SRA_DELAY = 1500.f;
+    private static float ONEDOLLAR_DELAY = 5000.f;
+
     //Attributs
     private boolean isOneDollarUsed = false;
     private boolean isSRAUsed = false;
     private boolean isMouseClickUsed = false;
+
+    private boolean isLocation2Needed = false;
+
+    private float timeMouseClicked = 0.f;
+    private float timeSRA = 0.f;
+    private float timeOneDollar = 0.f;
+
+
     protected float confidenceOneDollar = 0.f;
     protected float confidenceSra5 = 0.f;
 
@@ -62,6 +75,7 @@ public class CommandMerger {
 
         this.action = action;
         this.isSRAUsed = true;
+        this.timeSRA = Palette.processing.millis();
 
         if(this.isCommandValid()){
             this.addCommand();
@@ -75,10 +89,16 @@ public class CommandMerger {
         this.confidenceSra5 = confidence;
         this.action = action;
 
-        switch (action){
+        switch (action) {
             case CREER:
-                if(shape != null)
+                if (shape != null){
                     this.shape = shape;
+                }else{
+                    this.shape = Palette.getShapeAt(this.localisation1);
+                    isLocation2Needed = true;
+                }
+                System.out.println("shape : " + this.shape);
+
                 this.color = color;
 
 
@@ -97,6 +117,8 @@ public class CommandMerger {
         }
 
         this.isSRAUsed = true;
+        this.timeSRA = Palette.processing.millis();
+
         if(this.isCommandValid()){
             this.addCommand();
         }
@@ -105,6 +127,10 @@ public class CommandMerger {
     public void addCommandMouseClick(float x, float y){
         if(this.localisation1 == null){
             this.localisation1 = new PVector(x,y);
+            if(isSRAUsed && this.shape == null){
+                this.shape = Palette.getShapeAt(this.localisation1);
+                isLocation2Needed = true;
+            }
         }else if(this.localisation2 == null){
             this.localisation2 = new PVector(x,y);
         }else{
@@ -113,6 +139,7 @@ public class CommandMerger {
         }
 
         this.isMouseClickUsed = true;
+        this.timeMouseClicked = Palette.processing.millis();
 
         if(this.isCommandValid()){
             this.addCommand();
@@ -133,7 +160,7 @@ public class CommandMerger {
 
         switch (this.action){
             case CREER:
-                return (this.localisation1 != null && this.shape != null);
+                return (this.localisation1 != null && this.shape != null && (!isLocation2Needed || this.localisation2 != null));
             case DEPLACER:
                 break;
             case MODIFIER:
@@ -149,7 +176,7 @@ public class CommandMerger {
     }
 
     private void addCommand(){
-        Command command = new Command(this.action, this.shape, this.color, this.localisation1, this.confidenceOneDollar, this.confidenceSra5);
+        Command command = new Command(this.action, this.shape, this.color, this.localisation2==null?this.localisation1:this.localisation2, this.confidenceOneDollar, this.confidenceSra5);
         System.out.println(command);
         Palette.addCommand(command);
 
@@ -161,6 +188,8 @@ public class CommandMerger {
         this.isSRAUsed = false;
         this.isMouseClickUsed = false;
 
+        this.isLocation2Needed = false;
+
         this.shape = null;
         this.color = null;
         this.localisation1 = null;
@@ -168,5 +197,63 @@ public class CommandMerger {
         this.action = null;
         this.confidenceOneDollar = 0.f;
         this.confidenceSra5 = 0.f;
+    }
+
+    public void draw(){
+        Palette.processing.fill(0);
+        Palette.processing.textSize(20);
+        Palette.processing.textAlign(Palette.LEFT);
+
+        if(this.isOneDollarUsed){
+            this.checkDelayTimeOneDollar();
+            this.drawOneDollar();
+        }
+
+        if(this.isSRAUsed){
+            this.checkDelayTimeSRA();
+            this.drawSRA();
+        }
+
+        if(this.isMouseClickUsed){
+            this.checkDelayTimeMouseClick();
+            this.drawMouseClick();
+        }
+    }
+
+    private void drawMouseClick() {
+        Palette.processing.text("MouseClick (" + (Palette.processing.millis() - timeMouseClicked)/1000. + "s)", 10, 340);
+    }
+
+    private void checkDelayTimeMouseClick(){
+        if(Palette.processing.millis() - this.timeMouseClicked > MOUSE_CLICKED_DELAY){
+            this.localisation1 = null;
+            this.localisation2 = null;
+            this.isMouseClickUsed = false;
+        }
+    }
+
+    private void drawSRA() {
+        Palette.processing.text("SRA (" + (Palette.processing.millis() - timeSRA)/1000. + "s)", 10, 360);
+    }
+
+    private void checkDelayTimeSRA(){
+        if(Palette.processing.millis() - this.timeSRA > SRA_DELAY){
+            this.shape = null;
+            this.color = null;
+            this.confidenceSra5 = 0.f;
+            this.isSRAUsed = false;
+        }
+    }
+
+    private void drawOneDollar() {
+        Palette.processing.text("OneDollar (" + (Palette.processing.millis() - timeOneDollar)/1000. + "s)", 10, 380);
+    }
+
+    private void checkDelayTimeOneDollar(){
+        if(Palette.processing.millis() - this.timeOneDollar > ONEDOLLAR_DELAY){
+            this.shape = null;
+            this.confidenceOneDollar = 0.f;
+            this.isOneDollarUsed = false;
+        }
     }
 }
