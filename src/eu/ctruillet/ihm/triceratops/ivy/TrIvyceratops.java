@@ -10,7 +10,7 @@ import fr.dgac.ivy.IvyMessageListener;
 
 import java.util.ArrayList;
 
-public class IvyListener {
+public class TrIvyceratops {
     //Attribut
     protected Ivy bus;
     protected ArrayList<Command> commands = new ArrayList<>();
@@ -20,7 +20,7 @@ public class IvyListener {
 
 
     //Constructeur
-    public IvyListener (CommandMerger commandMerger){
+    public TrIvyceratops(CommandMerger commandMerger){
         this.bus = initBus("Triceratops", "Roar");
         this.commandMerger = commandMerger;
     }
@@ -45,27 +45,27 @@ public class IvyListener {
                             "\tTemplate=" + strings[0] + " \n" +
                             "\tConfidence=" + strings[1]);
 
-                    //ToDo Gerer la confidence
-                    command.setConfidenceOneDollar(Float.parseFloat(strings[1].replace(',','.')));
+
+                    float confidence = Float.parseFloat(strings[1].replace(',','.'));
+                    //command.setConfidenceOneDollar(Float.parseFloat(strings[1].replace(',','.')));
 
 
                     switch (strings[0]){
                         case "cancel":
                             //command.setAction(Action.CANCEL);
-                            commandMerger.addCommandOneDollar(Action.CANCEL, confidence);
+                            commandMerger.addCommandOneDollar(Action.ANNULER, confidence);
                             break;
 
                         case "circle":
-                            command.setAction(Action.CREER);
-                            command.setShape(Shape.CIRCLE);
+                            //command.setAction(Action.CREER);
+                            //command.setShape(Shape.CIRCLE);
+                            commandMerger.addCommandOneDollar(Shape.CIRCLE, confidence);
                             break;
                         case "rectangle":
-                            command.setAction(Action.CREER);
-                            command.setShape(Shape.RECTANGLE);
+                            commandMerger.addCommandOneDollar(Shape.RECTANGLE, confidence);
                             break;
                         case "triangle":
-                            command.setAction(Action.CREER);
-                            command.setShape(Shape.TRIANGLE);
+                            commandMerger.addCommandOneDollar(Shape.TRIANGLE, confidence);
                             break;
                         default:
                             break;
@@ -81,18 +81,18 @@ public class IvyListener {
             bus.bindMsg("^sra5 Parsed=action=(.*) what=(.*) form=(.*) color=(.*) localisation=(.*) Confidence=(.*) NP=(.*) Num_A=(.*)$", new IvyMessageListener() {
                 @Override
                 public void receive(IvyClient ivyClient, String[] strings) {
-                    System.out.println("> SRA5 \n"
-                                    + "\taction=" + strings[0] + "\n"
-                                    + "\twhat=" + strings[1] + "\n"
-                                    + "\tform=" + strings[2] + "\n"
-                                    + "\tcolor=" + strings[3] + "\n"
-                                    + "\tlocalisation=" + strings[4] + "\n"
-                                    + "\tConfidence=" + strings[5] + "\n"
-                                    + "\tNP=" + strings[6] + "\n"
-                                    + "\tNP=" + strings[7] + "\n"
-                            );
+//                    System.out.println("> SRA5 \n"
+//                                    + "\taction=" + strings[0] + "\n"
+//                                    + "\twhat=" + strings[1] + "\n"
+//                                    + "\tform=" + strings[2] + "\n"
+//                                    + "\tcolor=" + strings[3] + "\n"
+//                                    + "\tlocalisation=" + strings[4] + "\n"
+//                                    + "\tConfidence=" + strings[5] + "\n"
+//                                    + "\tNP=" + strings[6] + "\n"
+//                                    + "\tNP=" + strings[7] + "\n"
+//                            );
 
-                    float confidence = Float.parseFloat(strings[5].replace(',','.'));
+                    float confidence = Float.parseFloat(strings[5].replace(',','.')); // seuil de zéro à 1 en dessous de 0. on a pas compris la demande
 
                     switch (strings[0]){
                         case "CREATE":
@@ -101,17 +101,21 @@ public class IvyListener {
 
                         case "DELETE":
                             // ToDo
-                            //commandMerger.addCommandSRA(Action.SUPPRIMER, strings[1], Shape.getShape(strings[2]),);
+                            commandMerger.addCommandSRA(Action.SUPPRIMER, strings[1], Shape.getShape(strings[2]), Couleur.getColor(strings[3]), strings[4], confidence);
                             break;
 
                         case "MOVE":
                             // ToDo
-                            //commandMerger.addCommandSRA(Action.DEPLACER, strings[1], Shape.getShape(strings[2]),);
+                            commandMerger.addCommandSRA(Action.DEPLACER, strings[1], Shape.getShape(strings[2]), Couleur.getColor(strings[3]), strings[4], confidence);
+                            break;
+
+                        case "MODIFIER":
+                            // ToDo
+                            commandMerger.addCommandSRA(Action.MODIFIER, strings[1], Shape.getShape(strings[2]), Couleur.getColor(strings[3]), strings[4], confidence);
                             break;
 
                         case "ANNULER":
-                            // ToDo
-                            //commandMerger.addCommandSRA(Action.CANCEL, Float.parseFloat(strings[5]));
+                            commandMerger.addCommandSRA(Action.ANNULER, confidence);
                             break;
 
                         case "QUIT":
@@ -133,5 +137,13 @@ public class IvyListener {
         }
 
         return bus;
+    }
+
+    public void sendFeedback(Command c, FSM fsm) {
+        try{
+            bus.sendMsg("TTS Say=" + c.getFeedBack());
+        }catch (IvyException e){
+            e.printStackTrace();
+        }
     }
 }

@@ -4,5 +4,9 @@ public enum FSM {
     INIT,
     WAIT,
     CREER,
-    SUPPRIMER
+    DEPLACER,
+    MODIFIER,
+    SUPPRIMER,
+    ANNULER,
+    QUITTER
 }

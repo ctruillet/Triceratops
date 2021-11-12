@@ -24,8 +24,10 @@ public enum Couleur {
                 return VERT;
             case "BLUE":
                 return BLEU;
-            default:
+            case "RED":
                 return ROUGE;
+            default:
+                return null;
         }
     }
 
@@ -39,5 +41,16 @@ public enum Couleur {
 
     public static java.awt.Color getBlue(){
         return new java.awt.Color(11, 11, 115);
+    }
+
+    public boolean equals(Couleur c){
+        if(c == null){
+            return false;
+        }
+        return this.toString().equals(c.toString());
+    }
+
+    public String getName() {
+        return this.toString();
     }
 }

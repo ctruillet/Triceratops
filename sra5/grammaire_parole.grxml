@@ -48,6 +48,7 @@
 			<item> quitte <tag> out = "QUIT" </tag></item>
 			<item> sort <tag> out = "QUIT" </tag></item>
 			<item> arrête <tag> out = "QUIT" </tag></item>
+			<item> au revoir <tag> out = "QUIT" </tag></item>
 		</one-of>
 	</rule>
 

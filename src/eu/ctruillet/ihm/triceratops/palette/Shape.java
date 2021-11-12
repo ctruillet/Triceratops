@@ -30,4 +30,11 @@ public enum Shape {
                 return null;
         }
     }
+
+    public boolean equals(Shape shape){
+        if(shape != null){
+            return this.toString().equals(shape.toString());
+        }
+        return false;
+    }
 }

@@ -4,13 +4,19 @@ import eu.ctruillet.ihm.triceratops.palette.Action;
 import eu.ctruillet.ihm.triceratops.palette.Couleur;
 import eu.ctruillet.ihm.triceratops.palette.Palette;
 import eu.ctruillet.ihm.triceratops.palette.Shape;
+import processing.core.PConstants;
 import processing.core.PVector;
+
+import javax.swing.text.PlainDocument;
+import java.awt.*;
+
+import static processing.core.PConstants.CENTER;
 
 public class CommandMerger {
     //Constantes
-    private static float MOUSE_CLICKED_DELAY = 5000.f;
-    private static float SRA_DELAY = 1500.f;
-    private static float ONEDOLLAR_DELAY = 5000.f;
+    private static final float MOUSE_CLICKED_DELAY = 5000.f;
+    private static final float SRA_DELAY = 1500.f;
+    private static final float ONEDOLLAR_DELAY = 5000.f;
 
     //Attributs
     private boolean isOneDollarUsed = false;
@@ -32,6 +38,7 @@ public class CommandMerger {
     private PVector localisation1 = null;
     private PVector localisation2 = null;
     private Action action = null;
+    private Command commandcreer = null;
 
 
 
@@ -46,6 +53,7 @@ public class CommandMerger {
         this.shape = shape;
         this.confidenceOneDollar = confidence;
         this.isOneDollarUsed = true;
+        this.timeOneDollar = Palette.processing.millis();
 
         if(this.action == null)
             this.action = Action.CREER;
@@ -62,6 +70,7 @@ public class CommandMerger {
         this.action = action;
         this.confidenceOneDollar = confidence;
         this.isOneDollarUsed = true;
+        this.timeOneDollar = Palette.processing.millis();
 
         if(this.isCommandValid()){
             this.addCommand();
@@ -99,8 +108,12 @@ public class CommandMerger {
                 }
                 System.out.println("shape : " + this.shape);
 
-                this.color = color;
-
+                if(color == null){
+                    this.color = Palette.getCouleurAt(this.localisation2);
+                }else{
+                    this.color = color;
+                }
+                System.out.println("color : " + this.color);
 
                 break;
 
@@ -147,11 +160,14 @@ public class CommandMerger {
     }
 
     public boolean isCommandValid(){
+        if(this.action == Action.QUITTER){
+            return true;
+        }
         // Check si la commande est multimodale
         if(!((this.isOneDollarUsed || this.isSRAUsed) &&
                 (this.isOneDollarUsed || this.isMouseClickUsed) &&
                 (this.isSRAUsed || this.isMouseClickUsed))){
-            return this.action != null && this.action == Action.CANCEL;
+            return this.action != null && this.action == Action.ANNULER;
         }
 
         if(this.action == null){
@@ -167,7 +183,9 @@ public class CommandMerger {
                 break;
             case ERREUR:
                 break;
-            case CANCEL:
+            case SUPPRIMER:
+                return (this.localisation1 != null);
+            case ANNULER:
                 return true;
             default:
                 return false;
@@ -177,7 +195,8 @@ public class CommandMerger {
 
     private void addCommand(){
         Command command = new Command(this.action, this.shape, this.color, this.localisation2==null?this.localisation1:this.localisation2, this.confidenceOneDollar, this.confidenceSra5);
-        System.out.println(command);
+        command.setCommandCreer(this.commandcreer);
+//      System.out.println(command);
         Palette.addCommand(command);
 
         this.clean();
@@ -195,6 +214,7 @@ public class CommandMerger {
         this.localisation1 = null;
         this.localisation2 = null;
         this.action = null;
+        this.commandcreer = null;
         this.confidenceOneDollar = 0.f;
         this.confidenceSra5 = 0.f;
     }
@@ -221,7 +241,17 @@ public class CommandMerger {
     }
 
     private void drawMouseClick() {
-        Palette.processing.text("MouseClick (" + (Palette.processing.millis() - timeMouseClicked)/1000. + "s)", 10, 340);
+        Palette.processing.noStroke();
+        Palette.processing.fill(new Color(82, 175, 82,  getAlpha(timeMouseClicked, MOUSE_CLICKED_DELAY)).getRGB());
+
+        Palette.processing.rect(0.0f, 0.0f, (Palette.processing.width/3.0f), 30.0f);
+
+        Palette.processing.fill(0);
+        Palette.processing.textAlign(CENTER, CENTER);
+        Palette.processing.textSize(18);
+        Palette.processing.text("MouseClick", Palette.processing.width/6.0f, 9.0f);
+        Palette.processing.textSize(12);
+        Palette.processing.text("" + (Palette.processing.millis() - timeMouseClicked)/1000. + "s", Palette.processing.width/6.0f, 22);
     }
 
     private void checkDelayTimeMouseClick(){
@@ -233,13 +263,24 @@ public class CommandMerger {
     }
 
     private void drawSRA() {
-        Palette.processing.text("SRA (" + (Palette.processing.millis() - timeSRA)/1000. + "s)", 10, 360);
+        Palette.processing.noStroke();
+        Palette.processing.fill(new Color(147, 136, 9).getRGB());
+
+        Palette.processing.rect((Palette.processing.width/3.0f), 0.0f, (Palette.processing.width/3.0f), 30.0f);
+
+        Palette.processing.fill(0);
+        Palette.processing.textAlign(CENTER);
+        Palette.processing.textSize(20);
+        Palette.processing.text("SRA", Palette.processing.width/2.0f, 10);
+        Palette.processing.textSize(12);
+        Palette.processing.text("" + (Palette.processing.millis() - timeSRA)/1000. + "s", Palette.processing.width/2.0f, 25);
     }
 
     private void checkDelayTimeSRA(){
         if(Palette.processing.millis() - this.timeSRA > SRA_DELAY){
             this.shape = null;
             this.color = null;
+            this.commandcreer = null;
             this.confidenceSra5 = 0.f;
             this.isSRAUsed = false;
         }
@@ -255,5 +296,11 @@ public class CommandMerger {
             this.confidenceOneDollar = 0.f;
             this.isOneDollarUsed = false;
         }
+    }
+
+    private int getAlpha(float time, float delay){
+        if((Palette.processing.millis()-time) <= delay - 1000)
+            return 255;
+        return (int)(255 * ((Palette.processing.millis()-time)/delay));
     }
 }
