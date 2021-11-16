@@ -10,7 +10,7 @@ import fr.dgac.ivy.IvyMessageListener;
 
 import java.util.ArrayList;
 
-public class TrIvyceratops {
+public class TricerIVY {
     //Attribut
     protected Ivy bus;
     protected ArrayList<Command> commands = new ArrayList<>();
@@ -20,7 +20,7 @@ public class TrIvyceratops {
 
 
     //Constructeur
-    public TrIvyceratops(CommandMerger commandMerger){
+    public TricerIVY(CommandMerger commandMerger){
         this.bus = initBus("Triceratops", "Roar");
         this.commandMerger = commandMerger;
     }
@@ -78,6 +78,7 @@ public class TrIvyceratops {
             //^sra5 Parsed=action=(.*) what=(.*) form=(.*) color=(.*) localisation=(.*) Confidence=(.*) NP=(.*)$
             //sra5 Parsed=action=CREATE what=undefined form=RECTANGLE color=BLUE localisation=THERE Confidence=0,8282248 NP=11 Num_A=0
             //sra5 Parsed=action=CREATE what=THIS form=undefined color=BLUE localisation=THERE Confidence=0,8282248 NP=11 Num_A=0
+            //sra5 Parsed=action=MODIFIER what=THIS form=undefined color=BLUE localisation=THERE Confidence=0,8282248 NP=11 Num_A=0
             bus.bindMsg("^sra5 Parsed=action=(.*) what=(.*) form=(.*) color=(.*) localisation=(.*) Confidence=(.*) NP=(.*) Num_A=(.*)$", new IvyMessageListener() {
                 @Override
                 public void receive(IvyClient ivyClient, String[] strings) {
@@ -129,8 +130,6 @@ public class TrIvyceratops {
 
                 }
             });
-
-            //Event ("met ça ici" ) -> click souris
 
         } catch (IvyException e) {
             e.printStackTrace();

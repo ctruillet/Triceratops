@@ -8,5 +8,6 @@ public enum FSM {
     MODIFIER,
     SUPPRIMER,
     ANNULER,
-    QUITTER
+    QUITTER,
+    ERREUR,
 }

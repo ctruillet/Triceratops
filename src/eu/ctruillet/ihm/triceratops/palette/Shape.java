@@ -25,7 +25,7 @@ public enum Shape {
             case TRIANGLE:
                 return "Triangle";
             case CIRCLE:
-                return "Circle";
+                return "Cercle";
             default:
                 return null;
         }

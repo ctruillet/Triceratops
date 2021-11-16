@@ -113,6 +113,9 @@ public class CommandMerger {
                 }else{
                     this.color = color;
                 }
+                if (commandcreer == null){
+                    this.commandcreer = Palette.getCommandAt(this.localisation1);
+                }
                 System.out.println("color : " + this.color);
 
                 break;
@@ -151,6 +154,10 @@ public class CommandMerger {
             this.localisation2 = new PVector(x,y);
         }
 
+        if(this.action == Action.MODIFIER && this.commandcreer == null){
+            this.commandcreer = Palette.getCommandAt(new PVector(x,y));
+        }
+
         this.isMouseClickUsed = true;
         this.timeMouseClicked = Palette.processing.millis();
 
@@ -174,6 +181,8 @@ public class CommandMerger {
             return false;
         }
 
+        System.out.println(this);
+
         switch (this.action){
             case CREER:
                 return (this.localisation1 != null && this.shape != null && (!isLocation2Needed || this.localisation2 != null));
@@ -196,7 +205,6 @@ public class CommandMerger {
     private void addCommand(){
         Command command = new Command(this.action, this.shape, this.color, this.localisation2==null?this.localisation1:this.localisation2, this.confidenceOneDollar, this.confidenceSra5);
         command.setCommandCreer(this.commandcreer);
-//      System.out.println(command);
         Palette.addCommand(command);
 
         this.clean();
@@ -241,12 +249,16 @@ public class CommandMerger {
     }
 
     private void drawMouseClick() {
+        int alpha = this.getAlpha(timeMouseClicked, MOUSE_CLICKED_DELAY);
+        if(alpha<= 0){
+            return;
+        }
         Palette.processing.noStroke();
-        Palette.processing.fill(new Color(82, 175, 82,  getAlpha(timeMouseClicked, MOUSE_CLICKED_DELAY)).getRGB());
+        Palette.processing.fill(new Color(147, 36, 36,  alpha).getRGB());
 
         Palette.processing.rect(0.0f, 0.0f, (Palette.processing.width/3.0f), 30.0f);
+        Palette.processing.fill(new Color(0, 0, 0,  alpha).getRGB());
 
-        Palette.processing.fill(0);
         Palette.processing.textAlign(CENTER, CENTER);
         Palette.processing.textSize(18);
         Palette.processing.text("MouseClick", Palette.processing.width/6.0f, 9.0f);
@@ -255,7 +267,7 @@ public class CommandMerger {
     }
 
     private void checkDelayTimeMouseClick(){
-        if(Palette.processing.millis() - this.timeMouseClicked > MOUSE_CLICKED_DELAY){
+        if(Palette.processing.millis() - this.timeMouseClicked >= MOUSE_CLICKED_DELAY){
             this.localisation1 = null;
             this.localisation2 = null;
             this.isMouseClickUsed = false;
@@ -263,14 +275,19 @@ public class CommandMerger {
     }
 
     private void drawSRA() {
+        int alpha = this.getAlpha(timeSRA, SRA_DELAY);
+        if(alpha<= 0){
+            return;
+        }
         Palette.processing.noStroke();
-        Palette.processing.fill(new Color(147, 136, 9).getRGB());
+        Palette.processing.fill(new Color(82, 175, 82, alpha).getRGB());
 
         Palette.processing.rect((Palette.processing.width/3.0f), 0.0f, (Palette.processing.width/3.0f), 30.0f);
+        Palette.processing.fill(new Color(0, 0, 0,  alpha).getRGB());
 
-        Palette.processing.fill(0);
-        Palette.processing.textAlign(CENTER);
-        Palette.processing.textSize(20);
+        Palette.processing.textAlign(CENTER, CENTER);
+
+        Palette.processing.textSize(18);
         Palette.processing.text("SRA", Palette.processing.width/2.0f, 10);
         Palette.processing.textSize(12);
         Palette.processing.text("" + (Palette.processing.millis() - timeSRA)/1000. + "s", Palette.processing.width/2.0f, 25);
@@ -287,7 +304,22 @@ public class CommandMerger {
     }
 
     private void drawOneDollar() {
-        Palette.processing.text("OneDollar (" + (Palette.processing.millis() - timeOneDollar)/1000. + "s)", 10, 380);
+        int alpha = this.getAlpha(timeOneDollar, ONEDOLLAR_DELAY);
+        if(alpha<= 0){
+            return;
+        }
+        Palette.processing.noStroke();
+        Palette.processing.fill(new Color(59, 79, 166, alpha).getRGB());
+
+        Palette.processing.rect((2*Palette.processing.width/3.0f), 0.0f, (Palette.processing.width/3.0f), 30.0f);
+        Palette.processing.fill(new Color(0, 0, 0,  alpha).getRGB());
+
+        Palette.processing.textAlign(CENTER, CENTER);
+        Palette.processing.textSize(18);
+        Palette.processing.text("OneDollar", 5*Palette.processing.width/6.0f, 9.0f);
+        Palette.processing.textSize(12);
+        Palette.processing.text("" + (Palette.processing.millis() - timeOneDollar)/1000. + "s", 5*Palette.processing.width/6.0f, 22);
+
     }
 
     private void checkDelayTimeOneDollar(){
@@ -301,6 +333,24 @@ public class CommandMerger {
     private int getAlpha(float time, float delay){
         if((Palette.processing.millis()-time) <= delay - 1000)
             return 255;
-        return (int)(255 * ((Palette.processing.millis()-time)/delay));
+        if((Palette.processing.millis()-time) > delay)
+            return 0;
+
+//        System.out.println("alpha : " + Math.max((int) (255.f - 255.f * ((Palette.processing.millis() - time) - (delay - 1000)) / 1000.f), 0));
+        return Math.max((int) (255.f - 255.f * ((Palette.processing.millis() - time) - (delay - 1000)) / 1000.f), 0);
+    }
+
+    @Override
+    public String toString() {
+        return "CommandMerger{" +
+                "confidenceOneDollar=" + confidenceOneDollar +
+                ", confidenceSra5=" + confidenceSra5 +
+                ", shape=" + shape +
+                ", color=" + color +
+                ", localisation1=" + localisation1 +
+                ", localisation2=" + localisation2 +
+                ", action=" + action +
+                ", commandcreer=" + commandcreer +
+                '}';
     }
 }

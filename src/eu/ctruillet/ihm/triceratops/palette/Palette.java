@@ -2,7 +2,7 @@ package eu.ctruillet.ihm.triceratops.palette;
 
 import eu.ctruillet.ihm.triceratops.command.Command;
 import eu.ctruillet.ihm.triceratops.command.CommandMerger;
-import eu.ctruillet.ihm.triceratops.ivy.TrIvyceratops;
+import eu.ctruillet.ihm.triceratops.ivy.TricerIVY;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -13,9 +13,10 @@ public class Palette extends PApplet {
     public static PApplet processing;
     public static FSM fsm = FSM.INIT;
     public static ArrayList<Command> commands = new ArrayList<>();
+
     public CommandMerger commandMerger = new CommandMerger();
 
-    protected TrIvyceratops bus = new TrIvyceratops(commandMerger);
+    protected TricerIVY bus = new TricerIVY(commandMerger);
 
 
     //Méthodes
@@ -48,7 +49,7 @@ public class Palette extends PApplet {
                 case INIT:
                     fsm = FSM.WAIT;
                     break;
-
+                case ERREUR:
                 case SUPPRIMER:
                 case ANNULER:
                     bus.sendFeedback(new Command(fsm), fsm);
@@ -102,7 +103,7 @@ public class Palette extends PApplet {
     }
 
     public static void addCommand(Command c){
-        System.out.println(c);
+        System.out.println("NOUVELLE COMMANDE\n\t" + c);
         switch (c.getAction())  {
             case CREER:
                 commands.add(c);
@@ -110,15 +111,43 @@ public class Palette extends PApplet {
                 break;
 
             case ANNULER:
+                if(commands.isEmpty()) {
+                    fsm = FSM.ERREUR;
+                    break;
+                }
+
+
                 for (int i = commands.size()-1; i >= 0 && !commands.isEmpty(); i--) {
                     System.out.println("ANNULER ---> " + commands.get(i));
+
                     if(commands.get(i).getAction() == Action.CREER){
                         commands.remove(i);
                         break;
+
                     }else if(commands.get(i).getAction() == Action.DEPLACER){
                         System.out.println("\t ---->" + commands.get(i).commandCreer);
                         commands.get(i).commandCreer.removeCommandDeplacer(commands.get(i));
                         commands.remove(i);
+                        break;
+
+                    }else if(commands.get(i).getAction() == Action.MODIFIER){
+                        System.out.println("\t ---->" + commands.get(i).commandCreer);
+                        commands.get(i).commandCreer.removeCommandModifier(commands.get(i));
+                        commands.remove(i);
+                        break;
+
+                    }else if(commands.get(i).getAction() == Action.SUPPRIMER){
+                        for (int j = i-1; j >= 0 && !commands.isEmpty(); j--){
+                            // On parcours les commandes restantes jusqu'à trouver la commande SUPPRIMER identique (qui est à la place de la commande supprimée dans la liste)
+                            if(commands.get(i) == commands.get(j)){
+                                System.out.println("\t ---->" + " -" + commands.get(i).commandCreer);
+                                commands.set(j, commands.get(i).commandCreer);
+                                commands.remove(i);
+                                break;
+                            }
+                        }
+
+
                         break;
                     }
                 }
@@ -133,12 +162,15 @@ public class Palette extends PApplet {
                 break;
 
             case MODIFIER:
-                // ToDo
-
+                c.commandCreer.addCommandModifier(c);
+                commands.add(c);
+                fsm = FSM.MODIFIER;
                 break;
+
 
             case ERREUR:
                 break;
+
             case QUITTER:
                 // Ouvrir une page web vers https://www.youtube.com/watch?v=5KBo4dGAF8c
                 fsm = FSM.QUITTER;

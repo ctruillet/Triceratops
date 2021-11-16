@@ -40,6 +40,7 @@ public class Command {
     public Command commandCreer;
     //ToDo annuler la suppression
     protected ArrayList<Command> commandDeplacer = new ArrayList<>();
+    protected ArrayList<Command> commandModifier = new ArrayList<>();
     // Quand on va pour dessiner la commande (CREER)
     // ON check cette ArrayList
     //Si elle est vide - > comme d'hab
@@ -47,8 +48,6 @@ public class Command {
     //  -> on récupere la position associée
     //      -> on dessine la commande Creer à cette position
     // A chaque qu'on réçoit une commande deplacer -> on lm'ajouter à cette arraylist
-
-    // ToDo Action ChangerCouleur (même chose que pour deplacer)
 
 
     //Constructeur
@@ -65,6 +64,9 @@ public class Command {
     public Command(FSM fsm) {
         this(null, null,null, null, 0.f, 0.f);
         switch (fsm){
+            case ERREUR:
+                this.action = Action.ERREUR;
+                break;
             case ANNULER:
                 this.action = Action.ANNULER;
                 break;
@@ -119,81 +121,36 @@ public class Command {
 
         float x = localisation.x;
         float y = localisation.y;
+        Couleur color = this.color;
 
         if(this.commandDeplacer != null && !this.commandDeplacer.isEmpty()){
             x = this.commandDeplacer.get(this.commandDeplacer.size() - 1).localisation.x;
             y = this.commandDeplacer.get(this.commandDeplacer.size() - 1).localisation.y;
         }
 
+        if(this.commandModifier != null && !this.commandModifier.isEmpty()){
+            color = this.commandModifier.get(this.commandModifier.size() - 1).color;
+        }
+
 
         switch (this.shape){
             case RECTANGLE:
                 Palette.processing.rectMode(CENTER);
-                Palette.processing.fill(Couleur.getColor(this.color).getRGB());
+                Palette.processing.fill(Couleur.getColor(color).getRGB());
                 Palette.processing.rect(x, y, 100,60);
                 Palette.processing.rectMode(CORNER);
                 break;
             case TRIANGLE:
-                Palette.processing.fill(Couleur.getColor(this.color).getRGB());
+                Palette.processing.fill(Couleur.getColor(color).getRGB());
                 Palette.processing.triangle(x - 50, y + 30 , x + 50, y + 30 , x , y - 50 );
                 break;
             case CIRCLE:
-                Palette.processing.fill(Couleur.getColor(this.color).getRGB());
+                Palette.processing.fill(Couleur.getColor(color).getRGB());
                 Palette.processing.circle(x, y, 100);
                 break;
             default:
                 break;
         }
-
-    }
-
-    public void drawFeedback(){
-//        Palette.processing.noStroke();
-//        switch (action){
-//            case CREER:
-//                Palette.processing.fill(new java.awt.Color(255, 234, 0).getRGB(),255);
-//                break;
-//            case DEPLACER:
-//                Palette.processing.fill(new java.awt.Color(62, 133, 159).getRGB(),255);
-//                break;
-//            case ANNULER:
-//            case SUPPRIMER:
-//                Palette.processing.fill(new java.awt.Color(255, 119, 70).getRGB(),255);
-//                break;
-//            case MODIFIER:
-//                Palette.processing.fill(new java.awt.Color(15, 136, 15).getRGB(),255);
-//                break;
-//            case ERREUR:
-//                Palette.processing.fill(new java.awt.Color(199, 45, 45).getRGB(),255);
-//                break;
-//            default:
-//                break;
-//        }
-//        Palette.processing.textSize(20);
-//
-//        int largeurRect = (int)Palette.processing.textWidth(action.name()) + 30 ;
-//        Palette.processing.rect(0,0,largeurRect,30);
-//        Palette.processing.triangle(largeurRect,0,largeurRect,30,largeurRect+15,15);
-//        Palette.processing.textAlign(CENTER, CENTER);
-//        Palette.processing.fill(new java.awt.Color(0, 0,0).getRGB(),255);
-//        Palette.processing.text(action.name(), (float) (largeurRect/2.0),15);
-//
-//        // ToDo Afficher Forme
-//        if(shape != null) {
-//            switch (shape) {
-//                case CIRCLE:
-//                    break;
-//                case TRIANGLE:
-//                    break;
-//                case RECTANGLE:
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
-//
-//        // ToDo Afficher Localisation
-//        // ToDo Afficher Couleur
 
     }
 
@@ -230,11 +187,7 @@ public class Command {
         this.confidenceSra5 = confidenceSra5;
     }
 
-    public static void drawFeedBack(Command c){
-        if (c == null)
-                return;
-        c.drawFeedback();
-    }
+
     @Override
     public String toString() {
         return "Command{" +
@@ -317,7 +270,6 @@ public class Command {
         if(o instanceof Command){
             Command c = (Command) o;
             return c == this;
-            //return this.action.equals(c.action) && this.shape.equals(c.shape) && this.color.equals(c.color) && this.localisation.equals(c.localisation);
         }
         return false;
     }
@@ -350,16 +302,19 @@ public class Command {
                 msg = "Annulation";
                 break;
             case DEPLACER:
-                msg = "Déplacement du " + this.commandCreer.getShape() .getName() + " de couleur " + this.commandCreer.getCouleur().getName();
+                msg = "Déplacement du " + this.commandCreer.getShape().getName() + " de couleur " + this.commandCreer.getCouleur().getName();
                 break;
             case MODIFIER:
-                msg = "Changement de couleur";
+                msg = "Changement de couleur du " + this.commandCreer.getShape().getName() + " " + this.commandCreer.getCouleur().getName() + " en " + this.color.getName();
                 break;
             case QUITTER:
                 msg = "Au revoir";
                 break;
+            case SUPPRIMER:
+                msg = "Suppression du " + this.commandCreer.getShape().getName() + " de couleur " + this.commandCreer.getCouleur().getName();
+                break;
             default:
-                msg = "Je n'ai pas compris, pouvez vous repeter ?";
+                msg = "Ola qui voila ? Une belle erreur";
                 break;
         }
         return msg;
