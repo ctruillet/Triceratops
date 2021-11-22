@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE grammar PUBLIC "-//W3C//DTD GRAMMAR 1.0//EN"
+        "http://www.w3.org/TR/speech-grammar/grammar.dtd">
+<!-- the default grammar language is FR  -->
+<grammar  version="1.0"
+          mode ="voice"
+          xmlns="http://www.w3.org/2001/06/grammar"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.w3.org/2001/06/grammar
+                              http://www.w3.org/TR/speech-grammar/grammar.xsd"
+          xml:lang="fr-FR" root="ecoute" tag-format="semantics/1.0">
+
+    <rule id="ecoute" scope="public">
+        <item>
+            <ruleref uri="#creer"/>
+            <tag>
+                out.text = rules.creer.text;
+                out.action = rules.creer.action;
+                out.forme = rules.creer.forme;
+                out.localisation = rules.creer.localisation;
+                out.couleur = rules.creer.couleur;
+            </tag>
+        </item>
+    </rule>
+
+    <rule id="creer">
+        <tag>out.text = '';</tag>
+        <item>
+            <ruleref uri="#action_creer"/>
+            <tag>
+                out.text = out.text + " " + rules.action.text;
+                out.action = rules.action.tag;
+            </tag>
+        </item>
+        <item>
+            <ruleref uri="#forme_creer"/>
+            <tag>
+                out.text = out.text + " " + rules.forme.text;
+                out.forme = rules.forme.tag;
+            </tag>
+        </item>
+        <item repeat="0-1">
+            <one-of>
+                <item>
+                    <item repeat="0-1"> <ruleref uri="#couleur_creer"/>
+                        <tag>
+                            out.text = out.text + " " + rules.couleur.text;
+                            out.couleur = rules.couleur.tag;
+                        </tag>
+                    </item>
+                    <item repeat="0-1"> <ruleref uri="#localisation_creer"/>
+                        <tag>
+                            out.text = out.text + " " + rules.localisation.text;
+                            out.localisation = rules.localisation.tag;
+                        </tag>
+                    </item>
+                </item>
+                <item>
+                    <item repeat="0-1"> <ruleref uri="#localisation_creer"/>
+                        <tag>
+                            out.text = out.text + " " + rules.localisation.text;
+                            out.localisation = rules.localisation.tag;
+                        </tag>
+                    </item>
+                    <item repeat="0-1"> <ruleref uri="#couleur_creer"/>
+                        <tag>
+                            out.text = out.text + " " + rules.couleur.text;
+                            out.couleur = rules.couleur.tag;
+                        </tag>
+                    </item>
+                </item>
+            </one-of>
+        </item>
+    </rule>
+
+    <rule id="action_creer">
+        <one-of>
+            <item> cree <tag> out.tag = "CREATE" </tag> </item>
+            <item> creer <tag> out.tag = "CREATE" </tag> </item>
+            <item> ajoute <tag> out.tag = "CREATE" </tag> </item>
+            <item> ajouter <tag> out.tag = "CREATE" </tag> </item>
+        </one-of>
+        <item repeat="0-1"> <ruleref uri="#mot_liaison_creer"/> </item>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="forme_creer">
+        <one-of>
+            <item> ca <tag> out.tag = "THIS" </tag></item>
+            <item> ceci <tag> out.tag = "THIS" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="couleur_creer">
+        <item repeat="0-1"> <ruleref uri="#mot_liaison_creer"/> </item>
+        <one-of>
+            <item> rouge <tag> out.tag = "RED" </tag></item>
+            <item> vert <tag> out.tag = "GREEN" </tag></item>
+            <item> bleu <tag> out.tag = "BLUE" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="localisation_creer">
+        <one-of>
+            <item> la <tag> out.tag = "THERE" </tag></item>
+            <item> ici <tag> out.tag = "THERE" </tag></item>
+            <item> a cet endroit <tag> out.tag = "THERE" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="mot_liaison_creer">
+        <one-of>
+            <item> un </item>
+            <item> en </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="deplacer">
+        <tag>out.text = '';</tag>
+        <item>
+            <ruleref uri="#action_deplacer"/>
+            <tag>
+                out.text = out.text + " " + rules.action.text;
+                out.action = rules.action.tag;
+            </tag>
+        </item>
+        <item>
+            <ruleref uri="#forme_deplacer"/>
+            <tag>
+                out.text = out.text + " " + rules.forme.text;
+                out.forme = rules.forme.tag;
+            </tag>
+        </item>
+        <item repeat="0-1"> <ruleref uri="#couleur_deplacer"/>
+            <tag>
+                out.text = out.text + " " + rules.couleur.text;
+                out.couleur = rules.couleur.tag;
+            </tag>
+        </item>
+        <item> <ruleref uri="#localisation_deplacer"/>
+            <tag>
+                out.text = out.text + " " + rules.localisation.text;
+                out.localisation = rules.localisation.tag;
+            </tag>
+        </item>
+    </rule>
+
+    <rule id="action_deplacer">
+        <one-of>
+            <item> deplace <tag> out.tag = "MOVE" </tag> </item>
+            <item> deplacer <tag> out.tag = "MOVE" </tag> </item>
+            <item> bouge <tag> out.tag = "MOVE" </tag> </item>
+            <item> bouger <tag> out.tag = "MOVE" </tag> </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="forme_deplacer">
+        <one-of>
+            <item>
+                <one-of>
+                    <item> ca <tag> out.tag = "THIS" </tag></item>
+                    <item> ceci <tag> out.tag = "THIS" </tag></item>
+                </one-of>
+            </item>
+            <item>
+                <item repeat="0-1"> <ruleref uri="#mot_liaison_deplacer"/> </item>
+                <one-of>
+                    <item> rectangle <tag> out.tag = "RECTANGLE" </tag></item>
+                    <item> triangle <tag> out.tag = "TRIANGLE" </tag></item>
+                    <item> cercle <tag> out.tag = "CIRCLE" </tag></item>
+                </one-of>
+            </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="couleur_deplacer">
+        <item repeat="0-1"> en </item>
+        <one-of>
+            <item> rouge <tag> out.tag = "RED" </tag></item>
+            <item> vert <tag> out.tag = "GREEN" </tag></item>
+            <item> bleu <tag> out.tag = "BLUE" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="localisation_deplacer">
+        <one-of>
+            <item> la <tag> out.tag = "THERE" </tag></item>
+            <item> ici <tag> out.tag = "THERE" </tag></item>
+            <item> a cet endroit <tag> out.tag = "THERE" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="mot_liaison_deplacer">
+        <one-of>
+            <item> un </item>
+            <item> en </item>
+            <item> ce </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="modifier">
+        <tag>out.text = '';</tag>
+        <item>
+            <ruleref uri="#action_modifier"/>
+            <tag>
+                out.text = out.text + " " + rules.action.text;
+                out.action = rules.action.tag;
+            </tag>
+        </item>
+        <item> la couleur de <tag> out.text = out.text + " la couleur de"; </tag> </item>
+        <item>
+            <ruleref uri="#objet_modifier"/>
+            <tag>
+                out.text = out.text + " " + rules.objet.text;
+                out.forme = rules.objet.forme;
+            </tag>
+        </item>
+        <item> <ruleref uri="#couleur_modifier"/>
+            <tag>
+                out.text = out.text + " " + rules.couleur.text;
+                out.couleur = rules.couleur.tag;
+            </tag>
+        </item>
+    </rule>
+
+    <rule id="action_modifier">
+        <one-of>
+            <item> change <tag> out.tag = "CHANGE" </tag> </item>
+            <item> changer <tag> out.tag = "CHANGE" </tag> </item>
+            <item> modifie <tag> out.tag = "CHANGE" </tag> </item>
+            <item> modifier <tag> out.tag = "CHANGE" </tag> </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="objet_modifier">
+        <one-of>
+            <item> <ruleref uri="#forme_modifier"/>
+                <tag> out.forme = rules.forme.tag; </tag>
+            </item>
+            <item> <ruleref uri="#figure_modifier"/>
+                <tag>
+                    out.forme = rules.figure.tag;
+                </tag>
+            </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="forme_modifier">
+        <one-of>
+            <item> ca <tag> out.tag = "THIS" </tag></item>
+            <item> ceci <tag> out.tag = "THIS" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="figure_modifier">
+        <item repeat="0-1"> <ruleref uri="#mot_liaison_modifier"/> </item>
+        <one-of>
+            <item> rectangle <tag> out.tag = "RECTANGLE" </tag></item>
+            <item> triangle <tag> out.tag = "TRIANGLE" </tag></item>
+            <item> cercle <tag> out.tag = "CIRCLE" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="couleur_modifier">
+        <item repeat="0-1"> en </item>
+        <one-of>
+            <item> rouge <tag> out.tag = "RED" </tag></item>
+            <item> vert <tag> out.tag = "GREEN" </tag></item>
+            <item> bleu <tag> out.tag = "BLUE" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="mot_liaison_modifier">
+        <one-of>
+            <item> un </item>
+            <item> en </item>
+            <item> ce </item>
+            <item> le </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="supprimer">
+        <tag>out.text = '';</tag>
+        <item>
+            <ruleref uri="#action_supprimer"/>
+            <tag>
+                out.text = out.text + " " + rules.action.text;
+                out.action = rules.action.tag;
+            </tag>
+        </item>
+        <item>
+            <ruleref uri="#objet_supprimer"/>
+            <tag>
+                out.text = out.text + " " + rules.objet.text;
+                out.forme = rules.objet.forme;
+                if(rules.objet.is_in_color == 1) out.couleur = rules.objet.couleur;
+            </tag>
+        </item>
+    </rule>
+
+    <rule id="action_supprimer">
+        <one-of>
+            <item> supprime <tag> out.tag = "DELETE" </tag> </item>
+            <item> supprimer <tag> out.tag = "DELETE" </tag> </item>
+            <item> enleve <tag> out.tag = "DELETE" </tag> </item>
+            <item> enlever <tag> out.tag = "DELETE" </tag> </item>
+            <item> retire <tag> out.tag = "DELETE" </tag> </item>
+            <item> retirer <tag> out.tag = "DELETE" </tag> </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="objet_supprimer">
+        <tag> out.is_in_color = 0; </tag>
+        <one-of>
+            <item> <ruleref uri="#forme_supprimer"/>
+                <tag> out.forme = rules.forme.tag; </tag>
+            </item>
+            <item> <ruleref uri="#figure_supprimer"/>
+                <tag>
+                    out.forme = rules.figure.tag;
+                    out.couleur = rules.figure.couleur;
+                    out.is_in_color = rules.figure.is_in_color;
+                </tag>
+            </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="forme_supprimer">
+        <one-of>
+            <item> ca <tag> out.tag = "THIS" </tag></item>
+            <item> ceci <tag> out.tag = "THIS" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="figure_supprimer">
+        <item repeat="0-1"> <ruleref uri="#mot_liaison_supprimer"/> </item>
+        <one-of>
+            <item> rectangle <tag> out.tag = "RECTANGLE" </tag></item>
+            <item> triangle <tag> out.tag = "TRIANGLE" </tag></item>
+            <item> cercle <tag> out.tag = "CIRCLE" </tag></item>
+        </one-of>
+        <item repeat="0-1"> <ruleref uri="#couleur_supprimer"/>
+            <tag>
+                out.couleur = rules.couleur.tag;
+                out.is_in_color = rules.couleur.is_in_color;
+            </tag>
+        </item>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="couleur_supprimer">
+        <tag> out.is_in_color = 1 </tag>
+        <item repeat="0-1"> en </item>
+        <one-of>
+            <item> rouge <tag> out.tag = "RED" </tag></item>
+            <item> vert <tag> out.tag = "GREEN" </tag></item>
+            <item> bleu <tag> out.tag = "BLUE" </tag></item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+    <rule id="mot_liaison_supprimer">
+        <one-of>
+            <item> un </item>
+            <item> en </item>
+            <item> ce </item>
+            <item> le </item>
+        </one-of>
+        <tag> out.text = meta.current().text </tag>
+    </rule>
+
+</grammar>

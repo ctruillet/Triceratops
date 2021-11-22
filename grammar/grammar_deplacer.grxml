@@ -64,9 +64,9 @@
             <item>
                 <item repeat="0-1"> <ruleref uri="#mot_liaison"/> </item>
                 <one-of>
-                    <item> rectangle <tag> out.tag = "THIS" </tag></item>
-                    <item> triangle <tag> out.tag = "THIS" </tag></item>
-                    <item> cercle <tag> out.tag = "THIS" </tag></item>
+                    <item> rectangle <tag> out.tag = "RECTANGLE" </tag></item>
+                    <item> triangle <tag> out.tag = "TRIANGLE" </tag></item>
+                    <item> cercle <tag> out.tag = "CIRCLE" </tag></item>
                 </one-of>
             </item>
         </one-of>

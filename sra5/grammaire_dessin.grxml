@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE grammar PUBLIC "-//W3C//DTD GRAMMAR 1.0//EN"
+                "grammar.dtd">
+<!-- the default grammar language is FR  -->
+<grammar  version="1.0"
+          mode ="voice"
+          xmlns="http://www.w3.org/2001/06/grammar"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.w3.org/2001/06/grammar
+                              grammar.xsd"
+          xml:lang="fr-FR" root="Speech_Recognition" tag-format="semantics/1.0">
+
+	<rule id="Speech_Recognition" scope="public">
+        
+        <tag> out.couleur="GREY"; out.lieu="DEFAULT" </tag>
+
+        <one-of>
+            
+            <item>
+                <item> <ruleref uri="#action"/> <tag> out.action = rules.action </tag></item>
+		        <item> <ruleref uri="#forme"/> <tag> out.forme = rules.forme </tag></item>
+                <item repeat="0-1"> <ruleref uri="#lieu"/> <tag> out.lieu = rules.lieu </tag> </item>
+                <item repeat="0-1"> <ruleref uri="#couleur"/> <tag> out.couleur = rules.couleur </tag> </item>
+            </item>
+
+            <item>
+                <item> <ruleref uri="#action"/> <tag> out.action = rules.action </tag></item>
+		        <item> <ruleref uri="#forme"/> <tag> out.forme = rules.forme </tag></item>
+                <item> <ruleref uri="#couleur"/> <tag> out.couleur = rules.couleur </tag> </item>
+                <item> <ruleref uri="#lieu"/> <tag> out.lieu = rules.lieu </tag> </item>
+            </item>
+
+        </one-of>
+		
+		<ruleref special="GARBAGE"/>
+		
+		<tag> out = "action=" + out.action + " forme=" + out.forme + " lieu=" + out.lieu + " couleur=" + out.couleur </tag> 
+	</rule>
+
+    <rule id="action">
+		<tag> out="none" </tag>
+		<one-of>
+			<item> creer <tag> out = "CREATE" </tag></item>
+			<item> faire <tag> out = "CREATE" </tag></item>
+			<item> dessiner <tag> out = "CREATE"  </tag></item>
+			<item> former <tag> out = "CREATE" </tag></item>
+            <item> representer <tag> out = "CREATE" </tag></item>
+            <item> deplacer <tag> out = "MOVE"  </tag></item>
+			<item> bouger <tag> out = "MOVE" </tag></item>
+            <item> decaler <tag> out = "MOVE" </tag></item>
+            <item> cree <tag> out = "CREATE" </tag></item>
+			<item> fais <tag> out = "CREATE" </tag></item>
+			<item> dessine <tag> out = "CREATE"  </tag></item>
+			<item> forme <tag> out = "CREATE" </tag></item>
+            <item> represente <tag> out = "CREATE" </tag></item>
+            <item> deplace <tag> out = "MOVE"  </tag></item>
+			<item> bouge <tag> out = "MOVE" </tag></item>
+            <item> decale <tag> out = "MOVE" </tag></item>
+		</one-of>
+	</rule>
+
+    <rule id="forme">
+		<tag> out = "none" </tag>
+		<one-of>
+			<item> rectangle <tag> out = "RECTANGLE" </tag></item>
+			<item> cercle <tag> out = "CIRCLE" </tag></item>
+			<item> triangle <tag> out = "TRIANGLE" </tag></item>
+			<item> losange <tag> out = "DIAMOND" </tag></item>
+		</one-of>
+	</rule>
+
+    <rule id="lieu">
+		<tag> out = "none" </tag>
+		<one-of>
+			<item> ici <tag> out = "HERE" </tag></item>
+			<item> la <tag> out = "THERE" </tag></item>
+			<!--<item> en haut <tag> out = "TOP" </tag></item>
+			<item> en bas <tag> out = "BOTTOM" </tag></item>
+            <item> a droite <tag> out = "RIGHT" </tag></item>
+            <item> a gauche <tag> out = "LEFT" </tag></item>
+            <item> au milieu <tag> out = "MIDDLE" </tag></item>
+            <item> au centre <tag> out = "CENTER" </tag></item>-->
+		</one-of>
+	</rule>
+
+    <rule id="couleur">
+		<tag> out = "none" </tag>
+		<one-of>
+			<item> rouge <tag> out = "RED" </tag></item>
+			<item> vert <tag> out = "GREEN" </tag></item>
+			<item> bleu <tag> out = "BLUE" </tag></item>
+		</one-of>
+	</rule>
+
+</grammar>
