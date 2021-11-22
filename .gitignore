@@ -1,2 +1,4 @@
 # Project exclude paths
 /out/
+/OneDollarIvy/application.windows
+/.idea
