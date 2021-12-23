@@ -17,6 +17,7 @@ public class CommandMerger {
     private static final float MOUSE_CLICKED_DELAY = 5000.f;
     private static final float SRA_DELAY = 1500.f;
     private static final float ONEDOLLAR_DELAY = 5000.f;
+    public static final double SeuilSRA5 = 0.70;
 
     //Attributs
     private boolean isOneDollarUsed = false;
@@ -47,7 +48,7 @@ public class CommandMerger {
 
     //Méthodes
     public void addCommandOneDollar(Shape shape, float confidence){
-        if(confidence < 0.80){
+        if(confidence < SeuilSRA5){
             return;
         }
         this.shape = shape;
@@ -64,7 +65,7 @@ public class CommandMerger {
     }
 
     public void addCommandOneDollar(Action action, float confidence){
-        if(confidence < 0.80){
+        if(confidence < SeuilSRA5){
             return;
         }
         this.action = action;
@@ -78,7 +79,7 @@ public class CommandMerger {
     }
 
     public void addCommandSRA(Action action, float confidence){
-        if(confidence < 0.80){
+        if(confidence < SeuilSRA5){
             return;
         }
 
@@ -92,7 +93,7 @@ public class CommandMerger {
     }
 
     public void addCommandSRA(Action action, String what, Shape shape, Couleur color, String where, float confidence){
-        if(confidence < 0.80){
+        if(confidence < SeuilSRA5){
             return;
         }
         this.confidenceSra5 = confidence;
@@ -104,10 +105,21 @@ public class CommandMerger {
                     this.shape = shape;
                 }else{
                     this.shape = Palette.getShapeAt(this.localisation1);
-                    isLocation2Needed = true;
+                    this.isLocation2Needed = true;
                 }
                 System.out.println("shape : " + this.shape);
 
+                if(color == null){
+                    this.color = Palette.getCouleurAt(this.localisation1);
+                }else{
+                    this.color = color;
+                    this.isLocation2Needed = true;
+                }
+                System.out.println("color : " + this.color);
+
+                break;
+
+            case MODIFIER:
                 if(color == null){
                     this.color = Palette.getCouleurAt(this.localisation2);
                 }else{
@@ -121,11 +133,31 @@ public class CommandMerger {
                 break;
 
             case SUPPRIMER:
-                // ToDo
+                if (shape != null){
+                    this.shape = shape;
+                }else{
+                    this.shape = Palette.getShapeAt(this.localisation1);
+                    this.isLocation2Needed = true;
+                }
+                System.out.println("shape : " + this.shape);
+
                 break;
 
             case DEPLACER:
-                // ToDo
+                // Deplace ça là                    -> 2 locations FAIT
+                // Deplace le rectangle rouge ici   -> 1 location  /ToDo
+                // Deplace le rectangle ici         -> 1 location  //ToDo
+                // Deplace ce rectangle ici         -> 2 locations //ToDo
+                if (commandcreer == null){
+                    this.commandcreer = Palette.getCommandAt(this.localisation1);
+                    this.isLocation2Needed = true;
+                }
+                break;
+
+            case ANNULER:
+                break;
+
+            case QUITTER:
                 break;
 
             default:
@@ -174,7 +206,8 @@ public class CommandMerger {
         if(!((this.isOneDollarUsed || this.isSRAUsed) &&
                 (this.isOneDollarUsed || this.isMouseClickUsed) &&
                 (this.isSRAUsed || this.isMouseClickUsed))){
-            return this.action != null && this.action == Action.ANNULER;
+            //return this.action != null && this.action == Action.ANNULER;
+            return false;
         }
 
         if(this.action == null){
@@ -187,10 +220,11 @@ public class CommandMerger {
             case CREER:
                 return (this.localisation1 != null && this.shape != null && (!isLocation2Needed || this.localisation2 != null));
             case DEPLACER:
-                break;
+                return (this.localisation1 != null && this.commandcreer != null && (!isLocation2Needed || this.localisation2 != null));
             case MODIFIER:
-                break;
+                return (this.localisation1 != null && this.commandcreer != null && this.color != null && this.color != this.commandcreer.color);
             case ERREUR:
+                //Todo
                 break;
             case SUPPRIMER:
                 return (this.localisation1 != null);

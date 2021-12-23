@@ -103,7 +103,7 @@ public class Command {
     public Command(Action action, Shape shape, Couleur color, PVector localisation, float confidenceShape, float confidenceColor) {
         this.action = action;
         this.shape = shape;
-        this.color = color;
+        this.color = getColor(color);
         this.localisation = localisation;
         this.confidenceOneDollar = confidenceShape;
         this.confidenceSra5 = confidenceColor;
@@ -112,6 +112,70 @@ public class Command {
     }
 
     //Méthodes
+    //Couleur par défaut
+    private Couleur getColor(Couleur c){
+        if(c != null)
+            return c;
+
+        Couleur color;
+        switch ((int)(Math.random() * 3)){
+            case 0:
+                color = Couleur.ROUGE;
+                break;
+            case 1:
+                color = Couleur.VERT;
+                break;
+            case 2:
+                color = Couleur.BLEU;
+                break;
+            default:
+                color = Couleur.ROUGE;
+                break;
+        }
+        return color;
+    }
+
+    public void addCommandDeplacer(Command c){
+        if(c.getLocalisation() != null)
+            if(this.action != Action.CREER){
+                this.commandCreer.addCommandDeplacer(c);
+            }else{
+                commandDeplacer.add(c);
+            }
+
+    }
+
+    public void removeCommandDeplacer(Command c){
+        for (int i = 0; i < commandDeplacer.size(); i++) {
+            if(commandDeplacer.get(i).equals(c)){
+                commandDeplacer.remove(i);
+                return;
+            }
+        }
+    }
+
+    public void addCommandModifier(Command c){
+        if(c.getLocalisation() != null)
+            if(this.action != Action.CREER){
+                this.commandCreer.addCommandModifier(c);
+            }else{
+                commandModifier.add(c);
+            }
+
+    }
+
+    public void removeCommandModifier(Command c){
+        for (int i = 0; i < commandModifier.size(); i++) {
+            if(commandModifier.get(i).equals(c)){
+                commandModifier.remove(i);
+                return ;
+            }
+        }
+    }
+
+    public PVector getLocalisation(){
+        return localisation;
+    }
 
     public void drawCommand(){
         //ToDo Afficher le résultat de la commande sur la palette
@@ -209,6 +273,8 @@ public class Command {
     }
 
     public boolean isMouseOnShape(float mouseX, float mouseY) {
+        if(this.shape == null) return false;
+
         boolean isOnShape = false;
 
         float x = localisation.x;
@@ -292,7 +358,7 @@ public class Command {
     }
 
     public String getFeedBack() {
-        String msg;
+        String msg = "";
 
         switch (this.action) {
             case CREER:
@@ -302,7 +368,7 @@ public class Command {
                 msg = "Annulation";
                 break;
             case DEPLACER:
-                msg = "Déplacement du " + this.commandCreer.getShape().getName() + " de couleur " + this.commandCreer.getCouleur().getName();
+                msg = "Daiplacement du " + this.commandCreer.getShape().getName() + " de couleur " + this.commandCreer.getCouleur().getName();
                 break;
             case MODIFIER:
                 msg = "Changement de couleur du " + this.commandCreer.getShape().getName() + " " + this.commandCreer.getCouleur().getName() + " en " + this.color.getName();
@@ -311,6 +377,7 @@ public class Command {
                 msg = "Au revoir";
                 break;
             case SUPPRIMER:
+                if(this.commandCreer == null) break;
                 msg = "Suppression du " + this.commandCreer.getShape().getName() + " de couleur " + this.commandCreer.getCouleur().getName();
                 break;
             default:

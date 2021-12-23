@@ -45,17 +45,22 @@
 			<item> dessiner <tag> out = "CREATE"  </tag></item>
 			<item> former <tag> out = "CREATE" </tag></item>
             <item> representer <tag> out = "CREATE" </tag></item>
-            <item> deplacer <tag> out = "MOVE"  </tag></item>
-			<item> bouger <tag> out = "MOVE" </tag></item>
-            <item> decaler <tag> out = "MOVE" </tag></item>
-            <item> cree <tag> out = "CREATE" </tag></item>
+			<item> cree <tag> out = "CREATE" </tag></item>
 			<item> fais <tag> out = "CREATE" </tag></item>
 			<item> dessine <tag> out = "CREATE"  </tag></item>
 			<item> forme <tag> out = "CREATE" </tag></item>
-            <item> represente <tag> out = "CREATE" </tag></item>
-            <item> deplace <tag> out = "MOVE"  </tag></item>
+			<item> represente <tag> out = "CREATE" </tag></item>
+
+            <item> deplacer <tag> out = "MOVE"  </tag></item>
+			<item> bouger <tag> out = "MOVE" </tag></item>
+            <item> decaler <tag> out = "MOVE" </tag></item>
+			<item> deplace <tag> out = "MOVE"  </tag></item>
 			<item> bouge <tag> out = "MOVE" </tag></item>
-            <item> decale <tag> out = "MOVE" </tag></item>
+			<item> decale <tag> out = "MOVE" </tag></item>
+
+			<item> change <tag> out = "MODIFIER" </tag></item>
+			<item> changer <tag> out = "MODIFIER" </tag></item>
+
 		</one-of>
 	</rule>
 

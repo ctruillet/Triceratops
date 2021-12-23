@@ -36,8 +36,14 @@
 			
 			<item> déplacer  <tag> out = "MOVE" </tag></item>
 			<item> bouger  <tag> out = "MOVE" </tag></item>
+			<item> met  <tag> out = "MOVE" </tag></item>
 			<item> déplace <tag> out = "MOVE" </tag></item>
 			<item> bouge  <tag> out = "MOVE" </tag></item>
+
+			<item> changer  <tag> out = "MODIFIER" </tag></item>
+			<item> modifier  <tag> out = "MODIFIER" </tag></item>
+			<item> change <tag> out = "MODIFIER" </tag></item>
+			<item> modifie  <tag> out = "MODIFIER" </tag></item>
 			
 			<item> annuler <tag> out = "ANNULER" </tag></item>
 			<item> annule <tag> out = "ANNULER" </tag></item>

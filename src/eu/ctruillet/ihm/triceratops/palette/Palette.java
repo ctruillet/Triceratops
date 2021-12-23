@@ -43,7 +43,7 @@ public class Palette extends PApplet {
         try {
             background(200);
             fill(0);
-            text(fsm.name(), 600, 460);
+            //text(fsm.name(), 600, 460);
 
             switch (fsm) {
                 case INIT:
