@@ -101,17 +101,14 @@ public class TricerIVY {
                             break;
 
                         case "DELETE":
-                            // ToDo
                             commandMerger.addCommandSRA(Action.SUPPRIMER, strings[1], Shape.getShape(strings[2]), Couleur.getColor(strings[3]), strings[4], confidence);
                             break;
 
                         case "MOVE":
-                            // ToDo
                             commandMerger.addCommandSRA(Action.DEPLACER, strings[1], Shape.getShape(strings[2]), Couleur.getColor(strings[3]), strings[4], confidence);
                             break;
 
                         case "MODIFIER":
-                            // ToDo
                             commandMerger.addCommandSRA(Action.MODIFIER, strings[1], Shape.getShape(strings[2]), Couleur.getColor(strings[3]), strings[4], confidence);
                             break;
 

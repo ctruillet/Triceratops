@@ -52,12 +52,10 @@ public class Command {
 
     //Constructeur
     public Command(){
-        //ToDo peut être pas une bonne idée de mettre ici les params par défaut -> fout en l'air le check si la commande est valide
         this(null, null, null, new PVector((float) (Math.random() * 640), (float) (Math.random() * 480)), 0.f, 0.f);
     }
 
     public Command(Action action, Shape shape) {
-        // ToDo Gestion de la couleur, la localisation et confidence par defaut
         this(action,shape,null, null, 0.f, 0.f);
     }
 
@@ -82,17 +80,14 @@ public class Command {
     }
 
     public Command(Action action, Shape shape, float confidenceShape) {
-        // ToDo Gestion de la couleur et de la localisation par defaut
         this(action,shape,null, null, confidenceShape, 0.f);
     }
 
     public Command(Action action, Shape shape, Couleur color, PVector localisation) {
-        // ToDo Gestion de la couleur et de la localisation par defaut
         this(action, shape, color, localisation, 0.f, 0.f);
     }
 
     public Command(Action action, Shape shape, Couleur color, float confidenceShape, float confidenceColor) {
-        // ToDo Gestion de la localisation par defaut
         this(action,shape,color, null, confidenceShape, confidenceColor);
     }
 
@@ -178,7 +173,6 @@ public class Command {
     }
 
     public void drawCommand(){
-        //ToDo Afficher le résultat de la commande sur la palette
 
         if(this.action != Action.CREER)
             return;
